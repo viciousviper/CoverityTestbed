@@ -9,6 +9,7 @@ namespace CoverityTestbed
         {
             Console.WriteLine("Hello, Coverity!");
             Console.WriteLine(string.Format(CultureInfo.CurrentCulture, "CLR version is {0}", Environment.Version));
+            Console.WriteLine($"This is a string interpolation on CLR version {Environment.Version}");
             Console.ReadLine();
         }
     }
