@@ -46,13 +46,23 @@ namespace CoverityTestbed
         [TestMethod]
         public void TupleValueFunction_ReturnsDecomposableResult()
         {
-            (var sutInt, var sutString)  = ReturnTuple();
+            (var sutInt, var sutString) = ReturnTuple();
 
             Assert.IsInstanceOfType(sutInt, typeof(int));
             Assert.IsInstanceOfType(sutString, typeof(string));
 
             Assert.AreEqual(42, sutInt);
             Assert.AreEqual("Hello, World!", sutString);
+        }
+
+        [TestMethod]
+        public void PrivateFunction_ReturnsExpectedResult()
+        {
+            int Square(int value) => value * value;
+
+            var sut = Square(5);
+
+            Assert.AreEqual(25, sut);
         }
 
         [DataTestMethod]
