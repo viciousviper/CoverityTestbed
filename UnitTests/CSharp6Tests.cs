@@ -1,6 +1,7 @@
-The MIT License (MIT)
+﻿/*
+The MIT License(MIT)
 
-Copyright (c) 2017
+Copyright(c) 2017 IgorSoft
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,3 +20,25 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+*/
+
+using System;
+using System.Globalization;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+namespace CoverityTestbed
+{
+    [TestClass]
+    public class CSharp6Tests
+    {
+        [TestMethod]
+        public void GetInterpolatedString_MatchesFormattedString()
+        {
+            var sut = $"This test method is contained in class {nameof(CSharp6Tests)}";
+
+            var expectedResult = string.Format(CultureInfo.InvariantCulture, "This test method is contained in class {0}", nameof(CSharp6Tests));
+
+            Assert.AreEqual(expectedResult, sut);
+        }
+    }
+}
