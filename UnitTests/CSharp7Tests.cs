@@ -57,7 +57,7 @@ namespace CoverityTestbed
 
         [TestMethod]
         [ExpectedException(typeof(NullReferenceException))]
-        public void TupleValueFunction_ReturningDecomposableResultWithNullEnty_Throws()
+        public void TupleValueFunction_ReturningDecomposableResultWithNullEntry_Throws()
         {
             (var sutInt, var sutString) = ReturnAsTuple(42, default(string));
 
