@@ -24,6 +24,7 @@ SOFTWARE.
 
 using System;
 using System.Globalization;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CoverityTestbed
@@ -32,13 +33,43 @@ namespace CoverityTestbed
     public class CSharp6Tests
     {
         [TestMethod]
-        public void GetInterpolatedString_MatchesFormattedString()
+        public void NullConditionalOperator_WithNull_ReturnsNull()
+        {
+            var value = default(string);
+
+            Assert.AreEqual(default(string), value?.Substring(0, Math.Min(value.Length, 42)));
+        }
+
+        [TestMethod]
+        public void NameofOperator_ForClassName_ReturnsClassName()
+        {
+            Assert.AreEqual("CSharp6Tests", nameof(CSharp6Tests));
+        }
+
+        [TestMethod]
+        public void InterpolatedString_MatchesFormattedString()
         {
             var sut = $"This test method is contained in class {nameof(CSharp6Tests)}";
 
             var expectedResult = string.Format(CultureInfo.InvariantCulture, "This test method is contained in class {0}", nameof(CSharp6Tests));
 
             Assert.AreEqual(expectedResult, sut);
+        }
+
+        private string expressionBodiedField => "Foo";
+
+        private string ExpressionBodiedMethod(string value) => new string(value.Reverse().ToArray());
+
+        [TestMethod]
+        public void ExpressionBodiedField_ReturnsValue()
+        {
+            Assert.AreEqual("Foo", expressionBodiedField);
+        }
+
+        [TestMethod]
+        public void ExpressionBodiedField_ReturnsResult()
+        {
+            Assert.AreEqual("Foo", ExpressionBodiedMethod("ooF"));
         }
     }
 }
