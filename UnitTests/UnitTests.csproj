@@ -51,6 +51,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CoverityFiller3.cs" />
+    <Compile Include="CoverityFiller2.cs" />
+    <Compile Include="CoverityFiller1.cs" />
     <Compile Include="CSharp6Tests.cs" />
     <Compile Include="CSharp7Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
