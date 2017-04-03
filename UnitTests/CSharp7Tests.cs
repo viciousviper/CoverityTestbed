@@ -30,15 +30,15 @@ namespace CoverityTestbed
     [TestClass]
     public class CSharp7Tests
     {
-        private (int, string) ReturnTuple()
+        private (int, string) ReturnAsTuple(int intValue, string stringValue)
         {
-            return (42, "Hello, World!");
+            return (intValue, stringValue);
         }
 
         [TestMethod]
         public void TupleValueFunction_ReturnsTuple()
         {
-            var sut = ReturnTuple();
+            var sut = ReturnAsTuple(42, "Hello, World!");
 
             Assert.IsInstanceOfType(sut, typeof(ValueTuple<int, string>));
         }
@@ -46,13 +46,23 @@ namespace CoverityTestbed
         [TestMethod]
         public void TupleValueFunction_ReturnsDecomposableResult()
         {
-            (var sutInt, var sutString) = ReturnTuple();
+            (var sutInt, var sutString) = ReturnAsTuple(42, "Hello, World!");
 
             Assert.IsInstanceOfType(sutInt, typeof(int));
             Assert.IsInstanceOfType(sutString, typeof(string));
 
             Assert.AreEqual(42, sutInt);
             Assert.AreEqual("Hello, World!", sutString);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NullReferenceException))]
+        public void TupleValueFunction_ReturningDecomposableResultWithNullEnty_Throws()
+        {
+            (var sutInt, var sutString) = ReturnAsTuple(42, default(string));
+
+            Assert.AreEqual(42, sutInt);
+            Assert.AreEqual("Hello, World!".Length, sutString.Length);
         }
 
         [TestMethod]
