@@ -51,6 +51,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnalysisQuirks.cs" />
     <Compile Include="CoverityFiller3.cs" />
     <Compile Include="CoverityFiller2.cs" />
     <Compile Include="CoverityFiller1.cs" />
