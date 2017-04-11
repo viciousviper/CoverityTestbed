@@ -10,7 +10,7 @@ namespace UnitTests
     {
         public void Analyze_DictionaryTryGetValue()
         {
-            var dict = new Dictionary<int, string> { [1] = "One", [2] = "Two", [3] = "Three" };
+            var dict = new Dictionary<int, string> { [1] = "One", [2] = "Two", [3] = "Three", [4] = "Four" };
 
             var result = default(string);
             if (!dict.TryGetValue(3, out result)) {
