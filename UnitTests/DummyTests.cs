@@ -15,5 +15,17 @@ namespace UnitTests
         {
             Assert.IsTrue(true);
         }
+
+        [TestMethod]
+        public void Assert_Fail_Fails()
+        {
+            Assert.Fail();
+        }
+
+        [TestMethod]
+        public void Assert_Inconclusive_IsInconclusive()
+        {
+            Assert.Inconclusive();
+        }
     }
 }
