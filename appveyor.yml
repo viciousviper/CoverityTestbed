@@ -19,10 +19,11 @@ install:
       "https://repox.sonarsource.com/sonarsource-public-builds/org/sonarsource/scanner/msbuild/sonar-scanner-msbuild/2.3.0.526/sonar-scanner-msbuild-2.3.0.526.zip",
       "$PWD\sonar-scanner-msbuild-2.3.0.526.zip"
     )
-    
+
     Expand-Archive $PWD\sonar-scanner-msbuild-2.3.0.526.zip -DestinationPath $PWD\SonarQube
 
     Get-ChildItem $PWD -File -Filter "*SonarQube*" -Recurse
+
 cache: packages -> **\packages.config
 build_script:
 - cmd: >-
@@ -32,12 +33,9 @@ build_script:
 
     rem set PATH = %PATH%;"C:\Program Files\PackageManagement\NuGet\Packages\MSBuild.SonarQube.Runner.Tool.1.0.0\tools\"
 
-
     set PATH = %PATH%;".\SonarQube"
 
-
     echo %PATH%
-
 
     MSBuild.SonarQube.Runner.exe begin /k:"AnalysisTestbed" /o:"viciousviper-github" /n:"Analysis Testbed" /v:"%APPVEYOR_BUILD_VERSION%" /d:"sonar.language=cs" /d:"sonar.cs.vstest.reportsPaths=.\CoverityTestbed_testresults.trx" /d:"sonar.cs.opencover.reportsPaths=.\CoverityTestbed_coverage.xml" /d:"sonar.host.url=https://sonarqube.com" /d:"sonar.login=%SONARQUBE_TOKEN%"
 
@@ -58,6 +56,7 @@ test_script:
       "https://ci.appveyor.com/api/testresults/mstest/$env:APPVEYOR_JOB_ID",
       "$PWD\CoverityTestbed_testresults.trx"
     )
+
 - cmd: >-
     set PATH = %PATH%;"C:\Python34;C:\Python34\Scripts"
 
@@ -72,6 +71,7 @@ test_script:
     7z a -r coverity.zip cov-int
 
     curl.exe --form token=%COVERITY_TOKEN% --form email=%COVERITY_EMAIL% --form file=@coverity.zip --form version="1.0.0-alpha" https://scan.coverity.com/builds?project=%APPVEYOR_REPO_NAME%
+
 artifacts:
 - path: cov-int/build-log.txt
   name: Coverity Build Log
