@@ -45,8 +45,13 @@ test_script:
 
     MSBuild.SonarQube.Runner.exe end /d:"sonar.login=%SONARQUBE_TOKEN%
 
-    curl.exe --data-raw @.\CoverityTestbed_testresults.trx https://ci.appveyor.com/api/testresults/mstest/%APPVEYOR_JOB_ID%
+- ps: >-
+    (New-Object System.Net.WebClient).UploadFile(
+      "https://ci.appveyor.com/api/testresults/mstest/$env:APPVEYOR_JOB_ID",
+      "$PWD\CoverityTestbed_testresults.trx"
+    )
 
+- cmd: >-
     set PATH="C:\Python34;C:\Python34\Scripts";%PATH%
 
     pip install codecov
@@ -57,7 +62,7 @@ test_script:
 
     7z a -r coverity.zip cov-int
 
-    curl.exe --form token=%COVERITY_TOKEN% --form email=%COVERITY_EMAIL% --form file=@coverity.zip --form version="1.0.0-alpha" https://scan.coverity.com/builds?project=%APPVEYOR_REPO_NAME%
+    curl.exe -F token=%COVERITY_TOKEN% -F email=%COVERITY_EMAIL% -F file=@coverity.zip -F version="1.0.0-alpha" https://scan.coverity.com/builds?project=%APPVEYOR_REPO_NAME%
 
 artifacts:
 - path: cov-int/build-log.txt
