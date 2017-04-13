@@ -45,7 +45,7 @@ test_script:
 
     MSBuild.SonarQube.Runner.exe end /d:"sonar.login=%SONARQUBE_TOKEN%
 
-    curl.exe --data-raw file=@.\CoverityTestbed_testresults.trx https://ci.appveyor.com/api/testresults/mstest/%APPVEYOR_JOB_ID%
+    curl.exe --data-raw @.\CoverityTestbed_testresults.trx https://ci.appveyor.com/api/testresults/mstest/%APPVEYOR_JOB_ID%
 
     set PATH="C:\Python34;C:\Python34\Scripts";%PATH%
 
