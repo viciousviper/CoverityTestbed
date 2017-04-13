@@ -16,11 +16,11 @@ install:
     #Install-Package -Force MSBuild.SonarQube.Runner.Tool
 
     (New-Object System.Net.WebClient).DownloadFile(
-      "https://repox.sonarsource.com/sonarsource-public-builds/org/sonarsource/scanner/msbuild/sonar-scanner-msbuild/2.3.0.526/sonar-scanner-msbuild-2.3.0.526.zip",
-      "$PWD\sonar-scanner-msbuild-2.3.0.526.zip"
+      "https://repox.sonarsource.com/sonarsource-public-builds/org/sonarsource/scanner/msbuild/sonar-scanner-msbuild/2.3.0.553/sonar-scanner-msbuild-2.3.0.553.zip",
+      "$PWD\sonar-scanner-msbuild.zip"
     )
 
-    Expand-Archive $PWD\sonar-scanner-msbuild-2.3.0.526.zip -DestinationPath $PWD\SonarQube
+    Expand-Archive $PWD\sonar-scanner-msbuild.zip -DestinationPath $PWD\SonarQube
 
 cache: packages -> **\packages.config
 build_script:
