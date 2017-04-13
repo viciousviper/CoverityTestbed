@@ -17,6 +17,12 @@ namespace UnitTests
         }
 
         [TestMethod]
+        public void Assert_IsFalse_Succeeds()
+        {
+            Assert.IsFalse(false);
+        }
+
+        [TestMethod]
         public void Assert_Fail_Fails()
         {
             Assert.Fail();
