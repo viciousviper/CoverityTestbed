@@ -11,59 +11,38 @@ environment:
     secure: 2dCIzLRKIcRbsQbsYVPWaCxY2JIN1t3ELY0fFIrDXsBBbZ2zqCl8s2o8YXIh8DRk
   SONARQUBE_TOKEN:
     secure: B8SjYjO+rTDRb265vIqaCU5D9/DdbwpqD2EyzZJl3lzAqIzI/xvsva6ivN1ZHMu1
-
-
-
-
 install:
 - ps: >-
-  #Install-Package -Force MSBuild.SonarQube.Runner.Tool
-  (New-Object System.Net.WebClient).DownloadFile(
-    "https://repox.sonarsource.com/sonarsource-public-builds/org/sonarsource/scanner/msbuild/sonar-scanner-msbuild/2.3.0.526/sonar-scanner-msbuild-2.3.0.526.zip",
-    "$PWD\sonar-scanner-msbuild-2.3.0.526.zip")
-  Expand-Archive $PWD\sonar-scanner-msbuild-2.3.0.526.zip -DestinationPath $PWD\SonarQube
+    #Install-Package -Force MSBuild.SonarQube.Runner.Tool
 
+    (New-Object System.Net.WebClient).DownloadFile(
+      "https://repox.sonarsource.com/sonarsource-public-builds/org/sonarsource/scanner/msbuild/sonar-scanner-msbuild/2.3.0.526/sonar-scanner-msbuild-2.3.0.526.zip",
+      "$PWD\sonar-scanner-msbuild-2.3.0.526.zip"
+    )
+    Expand-Archive $PWD\sonar-scanner-msbuild-2.3.0.526.zip -DestinationPath $PWD\SonarQube
 cache: packages -> **\packages.config
-
 build_script:
-- cmd: >-
-  nuget restore
-
-  cov-build --dir cov-int msbuild CoverityTestbed.sln /p:UseSharedCompilation=false /verbosity:minimal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
-
-  #%PATH% = %PATH%;"C:\Program Files\PackageManagement\NuGet\Packages\MSBuild.SonarQube.Runner.Tool.1.0.0\tools"
-  %PATH% = %PATH%;".\SonarQube"
-
-  MSBuild.SonarQube.Runner.exe begin /k:"AnalysisTestbed" /o:"viciousviper-github" /n:"Analysis Testbed" /v:"%APPVEYOR_BUILD_VERSION%" /d:"sonar.language=cs" /d:"sonar.cs.vstest.reportsPaths=.\CoverityTestbed_testresults.trx" /d:"sonar.cs.opencover.reportsPaths=.\CoverityTestbed_coverage.xml" /d:"sonar.host.url=https://sonarqube.com" /d:"sonar.login=%SONARQUBE_TOKEN%"
-    
-  MSBuild CoverityTestbed.sln /t:Rebuild /p:UseSharedCompilation=false /verbosity:minimal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
-
+- ps: "nuget restore\n\ncov-build --dir cov-int msbuild CoverityTestbed.sln /p:UseSharedCompilation=false /verbosity:minimal /logger:\"C:\\Program Files\\AppVeyor\\BuildAgent\\Appveyor.MSBuildLogger.dll\"\n\n#%PATH% = %PATH%;\"C:\\Program Files\\PackageManagement\\NuGet\\Packages\\MSBuild.SonarQube.Runner.Tool.1.0.0\\tools\"\nset PATH = %PATH%;\".\\SonarQube\"\nMSBuild.SonarQube.Runner.exe begin /k:\"AnalysisTestbed\" /o:\"viciousviper-github\" /n:\"Analysis Testbed\" /v:\"%APPVEYOR_BUILD_VERSION%\" /d:\"sonar.language=cs\" /d:\"sonar.cs.vstest.reportsPaths=.\\CoverityTestbed_testresults.trx\" /d:\"sonar.cs.opencover.reportsPaths=.\\CoverityTestbed_coverage.xml\" /d:\"sonar.host.url=https://sonarqube.com\" /d:\"sonar.login=%SONARQUBE_TOKEN%\"\n    \nMSBuild CoverityTestbed.sln /t:Rebuild /p:UseSharedCompilation=false /verbosity:minimal /logger:\"C:\\Program Files\\AppVeyor\\BuildAgent\\Appveyor.MSBuildLogger.dll\""
 test_script:
 - cmd: >-
-  %PATH% = %PATH%;".\packages\OpenCover.4.6.519\tools"
+    set PATH = %PATH%;".\packages\OpenCover.4.6.519\tools"
 
-  OpenCover.Console.exe -register:user -target:"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\MSTest.exe" -targetargs:"/noisolation /resultsfile:.\CoverityTestbed_testresults.trx /testcontainer:.\UnitTests\bin\%CONFIGURATION%\UnitTests.dll" -filter:"+[UnitTests*]*" -excludebyattribute:*.ExcludeFromCodeCoverage* -hideskipped:All -output:.\CoverityTestbed_coverage.xml
+    OpenCover.Console.exe -register:user -target:"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\MSTest.exe" -targetargs:"/noisolation /resultsfile:.\CoverityTestbed_testresults.trx /testcontainer:.\UnitTests\bin\%CONFIGURATION%\UnitTests.dll" -filter:"+[UnitTests*]*" -excludebyattribute:*.ExcludeFromCodeCoverage* -hideskipped:All -output:.\CoverityTestbed_coverage.xml
+    MSBuild.SonarQube.Runner.exe end /d:"sonar.login=%SONARQUBE_TOKEN%
 
-  MSBuild.SonarQube.Runner.exe end /d:"sonar.login=%SONARQUBE_TOKEN%
+    rem (New-Object System.Net.WebClient).UploadFile(
+    rem   "https://ci.appveyor.com/api/testresults/mstest/$env:APPVEYOR_JOB_ID",
+    rem   "$PWD\CoverityTestbed_testresults.trx"
+    rem )
 
-- ps: >-
-  (New-Object System.Net.WebClient).UploadFile(
-    "https://ci.appveyor.com/api/testresults/mstest/$env:APPVEYOR_JOB_ID",
-    "$PWD\CoverityTestbed_testresults.trx"
-  )
+    set PATH = %PATH%;C:\Python34;C:\Python34\Scripts
+    pip install codecov
+    codecov -f .\CoverityTestbed_coverage.xml -X gcov
 
-- cmd: >-
-  %PATH% = %PATH%;C:\Python34;C:\Python34\Scripts
+    IF %CONFIGURATION% NEQ Debug EXIT
 
-  pip install codecov
-  codecov -f .\CoverityTestbed_coverage.xml -X gcov
-
-  IF %CONFIGURATION% NEQ Debug EXIT
-
-  7z a -r coverity.zip cov-int
-
-  curl.exe --form token=%COVERITY_TOKEN% --form email=%COVERITY_EMAIL% --form file=@coverity.zip --form version="1.0.0-alpha" https://scan.coverity.com/builds?project=%APPVEYOR_REPO_NAME%
-
+    7z a -r coverity.zip cov-int
+    curl.exe --form token=%COVERITY_TOKEN% --form email=%COVERITY_EMAIL% --form file=@coverity.zip --form version="1.0.0-alpha" https://scan.coverity.com/builds?project=%APPVEYOR_REPO_NAME%
 artifacts:
 - path: cov-int/build-log.txt
   name: Coverity Build Log
@@ -71,3 +50,5 @@ artifacts:
   name: TestResults
 - path: CoverityTestbed_coverage.xml
   name: Coverage
+- path: coverity.zip
+  name: Coverity ZIP
