@@ -30,12 +30,14 @@ build_script:
 
     cov-build --dir cov-int msbuild CoverityTestbed.sln /p:UseSharedCompilation=false /verbosity:minimal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 
-
     rem set PATH = %PATH%;"C:\Program Files\PackageManagement\NuGet\Packages\MSBuild.SonarQube.Runner.Tool.1.0.0\tools\"
+
 
     set PATH = %PATH%;".\SonarQube"
 
+
     echo %PATH%
+
 
     MSBuild.SonarQube.Runner.exe begin /k:"AnalysisTestbed" /o:"viciousviper-github" /n:"Analysis Testbed" /v:"%APPVEYOR_BUILD_VERSION%" /d:"sonar.language=cs" /d:"sonar.cs.vstest.reportsPaths=.\CoverityTestbed_testresults.trx" /d:"sonar.cs.opencover.reportsPaths=.\CoverityTestbed_coverage.xml" /d:"sonar.host.url=https://sonarqube.com" /d:"sonar.login=%SONARQUBE_TOKEN%"
 
