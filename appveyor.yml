@@ -12,6 +12,9 @@ environment:
   SONARQUBE_TOKEN:
     secure: B8SjYjO+rTDRb265vIqaCU5D9/DdbwpqD2EyzZJl3lzAqIzI/xvsva6ivN1ZHMu1
 
+
+
+
 install:
 - ps: >-
   #Install-Package -Force MSBuild.SonarQube.Runner.Tool
