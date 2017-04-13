@@ -19,6 +19,7 @@ install:
     "https://repox.sonarsource.com/sonarsource-public-builds/org/sonarsource/scanner/msbuild/sonar-scanner-msbuild/2.3.0.526/sonar-scanner-msbuild-2.3.0.526.zip",
     "$PWD\sonar-scanner-msbuild-2.3.0.526.zip"
   )
+  
   Expand-Archive $PWD\sonar-scanner-msbuild-2.3.0.526.zip -DestinationPath $PWD\SonarQube
 
 cache: packages -> **\packages.config
