@@ -28,6 +28,7 @@ build_script:
 
     cov-build --dir cov-int msbuild CoverityTestbed.sln /p:UseSharedCompilation=false /verbosity:minimal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 
+
     rem set PATH = %PATH%;"C:\Program Files\PackageManagement\NuGet\Packages\MSBuild.SonarQube.Runner.Tool.1.0.0\tools\"
 
     set PATH = %PATH%;".\SonarQube"
