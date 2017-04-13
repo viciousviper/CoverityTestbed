@@ -33,7 +33,7 @@ build_script:
 
     set PATH=".\SonarQube";%PATH%
 
-    MSBuild.SonarQube.Runner.exe begin /k:"AnalysisTestbed" /o:"viciousviper-github" /n:"Analysis Testbed" /v:"%APPVEYOR_BUILD_VERSION%" /d:"sonar.language=cs" /d:"sonar.cs.vstest.reportsPaths=.\CoverityTestbed_testresults.trx" /d:"sonar.cs.opencover.reportsPaths=.\CoverityTestbed_coverage.xml" /d:"sonar.host.url=https://sonarqube.com" /d:"sonar.login=%SONARQUBE_TOKEN%"
+    MSBuild.SonarQube.Runner.exe begin /k:"AnalysisTestbed" /o:"viciousviper-github" /n:"Analysis Testbed" /v:"%APPVEYOR_BUILD_VERSION%" /d:"sonar.language=cs" /d:"sonar.cs.vstest.reportsPaths=CoverityTestbed_testresults.trx" /d:"sonar.cs.opencover.reportsPaths=CoverityTestbed_coverage.xml" /d:"sonar.host.url=https://sonarqube.com" /d:"sonar.login=%SONARQUBE_TOKEN%"
 
     MSBuild CoverityTestbed.sln /t:Rebuild /p:UseSharedCompilation=false /verbosity:minimal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 
@@ -41,7 +41,7 @@ test_script:
 - cmd: >-
     set PATH=".\packages\OpenCover.4.6.519\tools";%PATH%
 
-    OpenCover.Console.exe -register:user -target:"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\MSTest.exe" -targetargs:"/noisolation /resultsfile:.\CoverityTestbed_testresults.trx /testcontainer:.\UnitTests\bin\%CONFIGURATION%\UnitTests.dll" -filter:"+[UnitTests*]*" -excludebyattribute:*.ExcludeFromCodeCoverage* -hideskipped:All -output:.\CoverityTestbed_coverage.xml
+    OpenCover.Console.exe -register:user -target:"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\MSTest.exe" -targetargs:"/noisolation /resultsfile:CoverityTestbed_testresults.trx /testcontainer:.\UnitTests\bin\%CONFIGURATION%\UnitTests.dll" -filter:"+[UnitTests*]*" -excludebyattribute:*.ExcludeFromCodeCoverage* -hideskipped:All -output:CoverityTestbed_coverage.xml
 
     MSBuild.SonarQube.Runner.exe end /d:"sonar.login=%SONARQUBE_TOKEN%
 
