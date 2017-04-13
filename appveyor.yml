@@ -22,8 +22,6 @@ install:
 
     Expand-Archive $PWD\sonar-scanner-msbuild-2.3.0.526.zip -DestinationPath $PWD\SonarQube
 
-    Get-ChildItem $PWD -File -Filter "*SonarQube*" -Recurse
-
 cache: packages -> **\packages.config
 build_script:
 - cmd: >-
@@ -39,7 +37,7 @@ build_script:
 
     MSBuild.SonarQube.Runner.exe begin /k:"AnalysisTestbed" /o:"viciousviper-github" /n:"Analysis Testbed" /v:"%APPVEYOR_BUILD_VERSION%" /d:"sonar.language=cs" /d:"sonar.cs.vstest.reportsPaths=.\CoverityTestbed_testresults.trx" /d:"sonar.cs.opencover.reportsPaths=.\CoverityTestbed_coverage.xml" /d:"sonar.host.url=https://sonarqube.com" /d:"sonar.login=%SONARQUBE_TOKEN%"
 
-    MSBuild CoverityTestbed.sln /t:Rebuild /p:UseSharedCompilation=false /verbosity:minimal /logger:\"C:\\Program Files\\AppVeyor\\BuildAgent\\Appveyor.MSBuildLogger.dll\"
+    MSBuild CoverityTestbed.sln /t:Rebuild /p:UseSharedCompilation=false /verbosity:minimal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 
 test_script:
 - cmd: >-
@@ -58,7 +56,7 @@ test_script:
     )
 
 - cmd: >-
-    set PATH = %PATH%;"C:\Python34;C:\Python34\Scripts"
+    set PATH=%PATH%;"C:\Python34;C:\Python34\Scripts"
 
     echo %PATH%
 
