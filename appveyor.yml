@@ -21,6 +21,8 @@ install:
     )
     
     Expand-Archive $PWD\sonar-scanner-msbuild-2.3.0.526.zip -DestinationPath $PWD\SonarQube
+
+    Get-ChildItem $PWD -File -Filter "*SonarQube*" -Recurse
 cache: packages -> **\packages.config
 build_script:
 - cmd: >-
@@ -33,6 +35,8 @@ build_script:
 
     set PATH = %PATH%;".\SonarQube"
 
+    echo %PATH%
+
     MSBuild.SonarQube.Runner.exe begin /k:"AnalysisTestbed" /o:"viciousviper-github" /n:"Analysis Testbed" /v:"%APPVEYOR_BUILD_VERSION%" /d:"sonar.language=cs" /d:"sonar.cs.vstest.reportsPaths=.\CoverityTestbed_testresults.trx" /d:"sonar.cs.opencover.reportsPaths=.\CoverityTestbed_coverage.xml" /d:"sonar.host.url=https://sonarqube.com" /d:"sonar.login=%SONARQUBE_TOKEN%"
 
     MSBuild CoverityTestbed.sln /t:Rebuild /p:UseSharedCompilation=false /verbosity:minimal /logger:\"C:\\Program Files\\AppVeyor\\BuildAgent\\Appveyor.MSBuildLogger.dll\"
@@ -40,6 +44,8 @@ build_script:
 test_script:
 - cmd: >-
     set PATH = %PATH%;".\packages\OpenCover.4.6.519\tools"
+
+    echo %PATH%
 
     OpenCover.Console.exe -register:user -target:"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\MSTest.exe" -targetargs:"/noisolation /resultsfile:.\CoverityTestbed_testresults.trx /testcontainer:.\UnitTests\bin\%CONFIGURATION%\UnitTests.dll" -filter:"+[UnitTests*]*" -excludebyattribute:*.ExcludeFromCodeCoverage* -hideskipped:All -output:.\CoverityTestbed_coverage.xml
 
@@ -52,6 +58,8 @@ test_script:
     )
 - cmd: >-
     set PATH = %PATH%;"C:\Python34;C:\Python34\Scripts"
+
+    echo %PATH%
 
     pip install codecov
 
