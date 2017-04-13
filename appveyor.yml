@@ -27,9 +27,13 @@ build_script:
     nuget restore
     
     cov-build --dir cov-int msbuild CoverityTestbed.sln /p:UseSharedCompilation=false /verbosity:minimal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+    
     rem set PATH = %PATH%;"C:\Program Files\PackageManagement\NuGet\Packages\MSBuild.SonarQube.Runner.Tool.1.0.0\tools\"
+    
     set PATH = %PATH%;".\SonarQube"
+    
     MSBuild.SonarQube.Runner.exe begin /k:"AnalysisTestbed" /o:"viciousviper-github" /n:"Analysis Testbed" /v:"%APPVEYOR_BUILD_VERSION%" /d:"sonar.language=cs" /d:"sonar.cs.vstest.reportsPaths=.\CoverityTestbed_testresults.trx" /d:"sonar.cs.opencover.reportsPaths=.\CoverityTestbed_coverage.xml" /d:"sonar.host.url=https://sonarqube.com" /d:"sonar.login=%SONARQUBE_TOKEN%"    \nMSBuild CoverityTestbed.sln /t:Rebuild /p:UseSharedCompilation=false /verbosity:minimal /logger:\"C:\\Program Files\\AppVeyor\\BuildAgent\\Appveyor.MSBuildLogger.dll\""
+    
 test_script:
 - cmd: >-
     set PATH = %PATH%;".\packages\OpenCover.4.6.519\tools"
@@ -42,12 +46,15 @@ test_script:
     rem )
 
     set PATH = %PATH%;"C:\Python34;C:\Python34\Scripts"
+    
     pip install codecov
+    
     codecov -f .\CoverityTestbed_coverage.xml -X gcov
 
     IF %CONFIGURATION% NEQ Debug EXIT
 
     7z a -r coverity.zip cov-int
+    
     curl.exe --form token=%COVERITY_TOKEN% --form email=%COVERITY_EMAIL% --form file=@coverity.zip --form version="1.0.0-alpha" https://scan.coverity.com/builds?project=%APPVEYOR_REPO_NAME%
 artifacts:
 - path: cov-int/build-log.txt
