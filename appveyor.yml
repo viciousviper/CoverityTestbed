@@ -71,5 +71,3 @@ artifacts:
   name: TestResults
 - path: CoverityTestbed_coverage.xml
   name: Coverage
-- path: coverity.zip
-  name: Coverity ZIP
